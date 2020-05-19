@@ -70,4 +70,13 @@
   <ItemGroup>
     <PreDeploy Include="Scripts\Script.PreDeployment.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\Author.sql" />
+    <Build Include="dbo\Tables\Book.sql" />
+    <Build Include="dbo\Tables\BookAuthor.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\Post-Deployment\SeedTestData.sql" />
+    <None Include="Database.publish.xml" />
+  </ItemGroup>
 </Project>

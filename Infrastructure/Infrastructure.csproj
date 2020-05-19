@@ -42,11 +42,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\IAuthorDM.cs" />
+    <Compile Include="Data\IAuthorRepository.cs" />
     <Compile Include="Data\IRepository.cs" />
+    <Compile Include="IServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Business\" />
+    <ProjectReference Include="..\DTO\DTO.csproj">
+      <Project>{E2862218-419E-4E36-A76C-F2AD9F1DD146}</Project>
+      <Name>DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ViewModels\ViewModels.csproj">
+      <Project>{C8FD2AA3-0F7E-4A83-B738-1DE064C349D4}</Project>
+      <Name>ViewModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,41 +1,50 @@
-﻿using Data;
+﻿using Business;
+using Data.Repositories;
+using Infrastructure;
+using Infrastructure.Business;
 using Infrastructure.Data;
-using System.Web.Http;
+using System;
 using Unity;
+using Unity.Injection;
 
 namespace Bootstrap
 {
-    public static class ServiceProvider
+    public class ServiceProvider: Infrastructure.IServiceProvider
     {
-        private static IUnityContainer _unityContainer;
+        private IUnityContainer _unityContainer;
 
-        static ServiceProvider()
+        public ServiceProvider()
         {
             _unityContainer = new UnityContainer();
             RegisterTypes();
         }
 
-        public static TEntity GetService<TEntity>()
+        public TEntity GetService<TEntity>()
         {
             return (TEntity)_unityContainer.Resolve(typeof(TEntity));
         }
 
-        private static void RegisterTypes()
+        private void RegisterTypes()
         {
             RegisterDataModels();
             RegisterBusinessModels();
         }
 
-        private static void RegisterBusinessModels()
+        private void RegisterBusinessModels()
         {
-            //_unityContainer.RegisterType<IBookDM, BookDM>();
-            //_unityContainer.RegisterType<IAuthorDM, AuthorDM>();
+            //_unityContainer.RegisterType<IBookDM, BookDM>(new InjectionConstructor(this));
+            _unityContainer.RegisterType<IAuthorDM, AuthorDM>(new InjectionConstructor(this));
         }
 
-        private static void RegisterDataModels()
+        private void RegisterDataModels()
         {
             //_unityContainer.RegisterType<IBookRepository, BookRepository>();
-            //_unityContainer.RegisterType<IAuthorRepository, AuthorRepository>();
+            _unityContainer.RegisterType<IAuthorRepository, AuthorRepository>();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }

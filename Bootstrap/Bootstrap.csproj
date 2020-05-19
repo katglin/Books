@@ -100,6 +100,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\Business\Business.csproj">
+      <Project>{9450FB3A-20B5-4C1C-9BE9-7AC2B13529A3}</Project>
+      <Name>Business</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{71cb135b-8bc9-4307-a49a-ce7158e6f21e}</Project>
       <Name>Data</Name>

@@ -13,9 +13,23 @@
     {
         private string _connectionString;
 
+        private SqlConnection _connection;
+
         public RepositoryDapper()
         {
             this._connectionString = ConfigurationManager.ConnectionStrings["BookStore"].ConnectionString;
+        }
+
+        protected SqlConnection ConnectionProvider()
+        {
+            if(_connection == null)
+            {
+                return new SqlConnection(_connectionString);
+            }
+            else
+            {
+                return _connection;
+            }
         }
 
         public IEnumerable<TEntity> GetAll()
