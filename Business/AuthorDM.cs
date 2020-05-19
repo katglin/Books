@@ -32,6 +32,15 @@ namespace Business
             }
         }
 
+        public IEnumerable<ListItem> GetAuthorsShort()
+        {
+            using (var authRepo = ServiceProvider.GetService<IAuthorRepository>())
+            {
+                var authors = authRepo.GetAuthorsShort();
+                return Mapper.Map<IEnumerable<ListItem>>(authors);
+            }
+        }
+
         public void CreateAuthor(Author author)
         {
             using (var authRepo = ServiceProvider.GetService<IAuthorRepository>())

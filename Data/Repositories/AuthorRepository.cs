@@ -37,6 +37,18 @@ namespace Data.Repositories
             }
         }
 
+        public IEnumerable<ListItemDTO> GetAuthorsShort()
+        {
+            using (var connection = ConnectionProvider())
+            {
+                string sql = @"SELECT Id, CONCAT(FirstName, ' ', LastName) AS Text
+                               FROM Author";
+
+                var authors = connection.Query<ListItemDTO>(sql).ToList();
+                return authors;
+            }
+        }
+
         public void CreateAuthor(AuthorDTO author)
         {
             using (var connection = ConnectionProvider())

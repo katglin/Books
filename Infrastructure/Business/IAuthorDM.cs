@@ -10,6 +10,8 @@ namespace Infrastructure.Business
 
         IEnumerable<Author> GetAuthors();
 
+        IEnumerable<ListItem> GetAuthorsShort();
+
         void CreateAuthor(Author author);
 
         void UpdateAuthor(Author author);

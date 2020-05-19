@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Infrastructure.Business;
 using System.Web.Mvc;
 using ViewModels;
 
@@ -9,67 +8,61 @@ namespace Web.Controllers
     {
         public ActionResult Index()
         {
-            List<Author> authors = new List<Author> {
-                new Author { Id = 1, FirstName = "Sansa", LastName = "Stark", BookNumber = 2 },
-                new Author { Id = 2, FirstName = "John", LastName = "Stark", BookNumber = 1 }
-            };
-            List<Book> books = new List<Book> {
-                new Book { Id = 1, Name = "Book 1", PageNumber = 100, Rate = 10, ReleaseDate = DateTime.Now, Authors = authors }
-            };
-            return View(books);
-        }
-
-
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
+            using (var bookDM = ServiceProvider.GetService<IBookDM>())
             {
-                return RedirectToAction("Index");
+                var books = bookDM.GetBooks();
+                return View(books);
             }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Edit(int id)
-        {
-            return View();
         }
 
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public bool Create(Book model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                using (var bookDM = ServiceProvider.GetService<IBookDM>())
+                {
+                    bookDM.CreateBook(model);
+                    return true;
+                }
             }
-            catch
+            else
             {
-                return View();
+                return false;
             }
         }
 
-        public ActionResult Delete(int id)
+        public JsonResult Get(long id)
         {
-            return View();
+            using (var bookDM = ServiceProvider.GetService<IBookDM>())
+            {
+                var book = bookDM.GetBook(id);
+                return Json(book, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Edit(Book model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                using (var bookDM = ServiceProvider.GetService<IBookDM>())
+                {
+                    bookDM.UpdateBook(model);
+                    return RedirectToAction("Index");
+                }
             }
-            catch
+            else
             {
-                return View();
+                return View(model);
+            }
+        }
+
+        public void Delete(long id)
+        {
+            using (var bookDM = ServiceProvider.GetService<IBookDM>())
+            {
+                bookDM.DeleteBook(id);
             }
         }
     }

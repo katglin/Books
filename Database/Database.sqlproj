@@ -74,6 +74,9 @@
     <Build Include="dbo\Tables\Author.sql" />
     <Build Include="dbo\Tables\Book.sql" />
     <Build Include="dbo\Tables\BookAuthor.sql" />
+    <Build Include="dbo\User Defined Types\BigIntArrayType.sql" />
+    <Build Include="dbo\Stored Procedures\USPCreateBook.sql" />
+    <Build Include="dbo\Stored Procedures\USPUpdateBook.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\Post-Deployment\SeedTestData.sql" />

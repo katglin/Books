@@ -13,7 +13,16 @@ namespace Web.Controllers
                 var authors = authorDM.GetAuthors();
                 return View(authors);
             }
-            
+        }
+
+        [HttpGet]
+        public JsonResult GetAuthors()
+        {
+            using (var authorDM = ServiceProvider.GetService<IAuthorDM>())
+            {
+                var authors = authorDM.GetAuthorsShort();
+                return Json(authors, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public ActionResult Create()
@@ -43,6 +52,7 @@ namespace Web.Controllers
         {
             using (var authorDM = ServiceProvider.GetService<IAuthorDM>())
             {
+                Session["fromUrl"] = Request.UrlReferrer.ToString();
                 var author = authorDM.GetAuthor(id);
                 return View(author);
             }
@@ -56,7 +66,7 @@ namespace Web.Controllers
                 using (var authorDM = ServiceProvider.GetService<IAuthorDM>())
                 {
                     authorDM.UpdateAuthor(model);
-                    return RedirectToAction("Index");
+                    return Redirect(Session["fromUrl"].ToString());
                 }
             }
             else

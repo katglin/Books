@@ -10,6 +10,8 @@
         {
             Mapper.Initialize(cfg => {
                 cfg.CreateMap<AuthorDTO, Author>().ReverseMap();
+                cfg.CreateMap<BookDTO, Book>().ReverseMap();
+                cfg.CreateMap<ListItemDTO, ListItem>().ReverseMap();
             });
         }
     }

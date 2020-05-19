@@ -19,6 +19,8 @@ namespace ViewModels
         [Required]
         public IEnumerable<Author> Authors { get; set; }
 
+        public IEnumerable<long> AuthorIds { get; set; }
+
         [Required]
         [Range(1, 10, ErrorMessage = "The value must be between 1 and 10")]
         public int Rate { get; set; }

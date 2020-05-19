@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookDM.cs" />
     <Compile Include="AuthorDM.cs" />
     <Compile Include="BaseDM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
