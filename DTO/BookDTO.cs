@@ -13,6 +13,7 @@ namespace DTO
         public string Name { get; set; }
         public DateTime ReleaseDate { get; set; }
         public List<AuthorDTO> Authors { get; set; }
+        public IEnumerable<long> AuthorIds { get; set; }
         public int Rate { get; set; }
         public int PageNumber { get; set; }
     }

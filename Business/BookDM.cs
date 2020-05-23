@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ViewModels;
 using AutoMapper;
 using DTO;
+using System.Linq;
 
 namespace Business
 {
@@ -18,8 +19,9 @@ namespace Business
         {
             using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
             {
-                var author = bookRepo.GetBook(id);
-                return Mapper.Map<Book>(author);
+                var book = bookRepo.GetBook(id);
+                book.AuthorIds = book.Authors.Select(a => a.Id);
+                return Mapper.Map<Book>(book);
             }
         }
 
@@ -32,12 +34,12 @@ namespace Business
             }
         }
 
-        public void CreateBook(Book book)
+        public long CreateBook(Book book)
         {
             using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
             {
                 var entity = Mapper.Map<BookDTO>(book);
-                bookRepo.CreateBook(entity);
+                return bookRepo.CreateBook(entity);
             }
         }
 

@@ -17,14 +17,15 @@
 
         public RepositoryDapper()
         {
-            this._connectionString = ConfigurationManager.ConnectionStrings["BookStore"].ConnectionString;
+            _connectionString = ConfigurationManager.ConnectionStrings["BookStore"].ConnectionString;
         }
 
         protected SqlConnection ConnectionProvider()
         {
             if(_connection == null)
             {
-                return new SqlConnection(_connectionString);
+                _connection = new SqlConnection(_connectionString);
+                return _connection;
             }
             else
             {

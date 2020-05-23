@@ -16,19 +16,19 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public bool Create(Book model)
+        public JsonResult Create(Book model)
         {
             if (ModelState.IsValid)
             {
                 using (var bookDM = ServiceProvider.GetService<IBookDM>())
                 {
-                    bookDM.CreateBook(model);
-                    return true;
+                    model.Id = bookDM.CreateBook(model);
+                    return Json(bookDM.GetBook((int)model.Id));
                 }
             }
             else
             {
-                return false;
+                return null;
             }
         }
 
@@ -42,22 +42,23 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(Book model)
+        public JsonResult Edit(Book model)
         {
             if (ModelState.IsValid)
             {
                 using (var bookDM = ServiceProvider.GetService<IBookDM>())
                 {
                     bookDM.UpdateBook(model);
-                    return RedirectToAction("Index");
+                    return Json(bookDM.GetBook((int)model.Id));
                 }
             }
             else
             {
-                return View(model);
+                return null;
             }
         }
 
+        [HttpPost]
         public void Delete(long id)
         {
             using (var bookDM = ServiceProvider.GetService<IBookDM>())

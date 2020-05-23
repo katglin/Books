@@ -15,14 +15,10 @@ BEGIN
     WHERE Id = @BookId
 
     MERGE BookAuthor ba USING @AuthorIds ids
-    ON (ba.AuthorId = ids.Item AND ba.BookId = @BookId)
-    WHEN NOT MATCHED
+    ON (ba.AuthorId = ids.Item)
+    WHEN NOT MATCHED BY TARGET
         THEN INSERT (BookId, AuthorId) VALUES (@BookId, ids.Item)
-    WHEN NOT MATCHED BY SOURCE
+    WHEN NOT MATCHED BY SOURCE AND BookId = @BookId
         THEN DELETE;
-
-    INSERT INTO BookAuthor (BookId, AuthorId)
-    SELECT @BookId, Item
-    FROM @AuthorIds;
 
 END

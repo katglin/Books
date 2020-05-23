@@ -31,7 +31,7 @@ namespace Data.Repositories
                     .Select(group =>
                     {
                         var combinedBook = group.First();
-                        combinedBook.Authors = group.Select(book => book.Authors.Single()).ToList();
+                        combinedBook.Authors = group.Select(book => book.Authors.Single()).OrderBy(a => a.FirstName + a.LastName).ToList();
                         return combinedBook;
                     });
 
@@ -46,7 +46,8 @@ namespace Data.Repositories
                 string sql = @"SELECT b.Id, b.Name, b.ReleaseDate, b.Rate, b.PageNumber, a.Id, a.FirstName, a.LastName, ba.BookId, ba.AuthorId
                                FROM Book b 
                                JOIN BookAuthor ba ON b.Id = ba.BookId
-                               JOIN Author a ON a.Id = ba.AuthorId";
+                               JOIN Author a ON a.Id = ba.AuthorId
+                               ORDER BY b.Id DESC";
 
                 var books = connection.Query<BookDTO, AuthorDTO, BookDTO>(sql,
                     (book, author) =>
@@ -59,7 +60,7 @@ namespace Data.Repositories
                     .Select(group =>
                     {
                         var combinedBook = group.First();
-                        combinedBook.Authors = group.Select(book => book.Authors.Single()).ToList();
+                        combinedBook.Authors = group.Select(book => book.Authors.Single()).OrderBy(a => a.FirstName + a.LastName).ToList();
                         return combinedBook;
                     });
 
@@ -67,14 +68,33 @@ namespace Data.Repositories
             }
         }
 
-        public void CreateBook(BookDTO book)
+        public long CreateBook(BookDTO book)
         {
             using (var connection = ConnectionProvider())
             {
                 var SP = "USPCreateBook";
                 var queryParameters = new DynamicParameters();
-                var ids = book.Authors.Select(a => a.Id).AsDataTableParam();
+                var ids = book.AuthorIds.AsDataTableParam();
 
+                queryParameters.Add("@BookName", book.Name);
+                queryParameters.Add("@ReleaseDate", book.ReleaseDate);
+                queryParameters.Add("@Rate", book.Rate);
+                queryParameters.Add("@PageNumber", book.PageNumber);
+                queryParameters.Add("@AuthorIds", ids.AsTableValuedParameter("BigIntArrayType"));
+
+                return connection.Query<long>(SP, queryParameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
+            }
+        }
+
+        public void UpdateBook(BookDTO book)
+        {
+            using (var connection = ConnectionProvider())
+            {
+                var SP = "USPUpdateBook";
+                var queryParameters = new DynamicParameters();
+                var ids = book.AuthorIds.AsDataTableParam();
+
+                queryParameters.Add("@BookId", book.Id);
                 queryParameters.Add("@BookName", book.Name);
                 queryParameters.Add("@ReleaseDate", book.ReleaseDate);
                 queryParameters.Add("@Rate", book.Rate);
@@ -85,31 +105,19 @@ namespace Data.Repositories
             }
         }
 
-        public void UpdateBook(BookDTO book)
-        {
-            using (var connection = ConnectionProvider())
-            {
-                var SP = "USPUpdateBook";
-                var queryParameters = new DynamicParameters();
-                var ids = book.Authors.Select(a => a.Id).AsDataTableParam();
-
-                queryParameters.Add("@BookId", book.Id);
-                queryParameters.Add("@BookName", book.Name);
-                queryParameters.Add("@ReleaseDate", book.ReleaseDate);
-                queryParameters.Add("@Rate", book.Rate);
-                queryParameters.Add("@PageNumber", book.PageNumber);
-                queryParameters.Add("@AuthorIds", ids.AsTableValuedParameter("BigIntList"));
-
-                connection.Query(SP, queryParameters, commandType: CommandType.StoredProcedure);
-            }
-        }
-
         public void DeleteBook(long id)
         {
             using (var connection = ConnectionProvider())
             {
-                string sql = $@"DELETE Book 
-                                WHERE Id = {id}";
+                string sql = $@"BEGIN TRAN DeleteBookWithDeps
+                                BEGIN TRY
+                                    DELETE BookAuthor WHERE BookId = {id};
+                                    DELETE Book WHERE Id = {id}
+                                    COMMIT TRAN DeleteBookWithDeps
+                                END TRY
+                                BEGIN CATCH
+                                      ROLLBACK TRANSACTION DeleteBookWithDeps
+                                END CATCH";
                 connection.Query(sql);
             }
         }

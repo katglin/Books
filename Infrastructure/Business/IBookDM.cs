@@ -10,7 +10,7 @@ namespace Infrastructure.Business
 
         IEnumerable<Book> GetBooks();
 
-        void CreateBook(Book Book);
+        long CreateBook(Book Book);
 
         void UpdateBook(Book Book);
 

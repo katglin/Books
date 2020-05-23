@@ -30,7 +30,8 @@ namespace Data.Repositories
                 string sql = @"SELECT a.Id, FirstName, LastName, COUNT(ba.Id) AS BookNumber
                                FROM Author a 
                                LEFT JOIN BookAuthor ba ON a.Id = ba.AuthorId
-                               GROUP BY a.Id, FirstName, LastName";
+                               GROUP BY a.Id, FirstName, LastName
+                               ORDER BY FirstName, LastName";
 
                 var authors = connection.Query<AuthorDTO>(sql).ToList();
                 return authors;
@@ -42,7 +43,8 @@ namespace Data.Repositories
             using (var connection = ConnectionProvider())
             {
                 string sql = @"SELECT Id, CONCAT(FirstName, ' ', LastName) AS Text
-                               FROM Author";
+                               FROM Author
+                               ORDER BY FirstName, LastName";
 
                 var authors = connection.Query<ListItemDTO>(sql).ToList();
                 return authors;

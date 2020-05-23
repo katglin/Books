@@ -17,4 +17,6 @@ BEGIN
     SELECT @BookId, Item
     FROM @AuthorIds;
 
+    SELECT @BookId;
+
 END

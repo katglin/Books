@@ -16,9 +16,9 @@ namespace ViewModels
         [Required]
         public DateTime ReleaseDate { get; set; }
 
-        [Required]
         public IEnumerable<Author> Authors { get; set; }
 
+        [Required]
         public IEnumerable<long> AuthorIds { get; set; }
 
         [Required]

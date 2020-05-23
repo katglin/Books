@@ -9,7 +9,7 @@ namespace Infrastructure.Data
 
         IEnumerable<BookDTO> GetBooks();
 
-        void CreateBook(BookDTO Book);
+        long CreateBook(BookDTO Book);
 
         void UpdateBook(BookDTO Book);
 
