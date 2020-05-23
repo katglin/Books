@@ -1,0 +1,54 @@
+﻿<div class="modal fade" tabindex="-1" id="bookModal"
+     data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    ×
+                </button>
+                <h4 class="modal-title">Book Details</h4>
+            </div>
+            <div class="modal-body">
+                <form id="bookModalForm">
+                    <div class="form-group" hidden>
+                        <input class="form-control" type="text" id="Id" name="Id" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Name">Book Name:</label>
+                        <input class="form-control" type="text" id="Name" name="Name" placeholder="Select Book Name" required maxlength="100" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ReleaseDate">Release Date:</label>
+                        <input class="form-control" type="date" id="ReleaseDate" min="1753-01-01" name="ReleaseDate" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Authors">Authors:</label>
+                        <select class="form-control" id="AuthorIds" name="AuthorIds" multiple="multiple" required>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Rate">Rate:</label>
+                        <input class="form-control" type="number" id="Rate" name="Rate" min="1" max="10" placeholder="Select Rate [1..10]" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="PageNumber">Page Number:</label>
+                        <input class="form-control" type="number" id="PageNumber" name="PageNumber" min="1" max="10000" placeholder="Select Page Number" required />
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Submit
+                        </button>
+                        <button type="button" id="btnHideBookModal" class="btn btn-primary button button4">
+                            Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -7,7 +7,7 @@
 <h2>Authors</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
 </p>
 <table class="table">
     <tr>
@@ -35,7 +35,7 @@
             @Html.DisplayFor(modelItem => item.BookNumber)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id, firstName = item.FirstName, lastName = item.LastName }) |
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id, firstName = item.FirstName, lastName = item.LastName }) <br/>
             @if(item.BookNumber > 0){
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "disabled" })
             }

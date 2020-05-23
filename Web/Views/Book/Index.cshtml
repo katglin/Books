@@ -7,12 +7,12 @@
 <h2>Books</h2>
 
 <p>
-    <button id="btnShowModal" type="button">
+    <button class="btn btn-primary" id="btnShowBookModal" type="button">
         Create New
     </button>
 </p>
 @{
-    Html.RenderPartial("_Create");
+    Html.RenderPartial("_CreateEdit");
 }
 <table class="table" id="booksList">
     <tr>
@@ -81,74 +81,3 @@
     }
 
 </table>
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#btnShowModal").click(function () {
-            $("#bookModal").modal('show');
-        });
-
-        $("#btnHideModal").click(function () {
-            $('#createBookForm').trigger("reset");
-            $('#AuthorIds').val("").trigger('change');
-
-            $("#bookModal").modal('hide');
-        });
-
-        $("#booksList").on("click", ".edit-book", function () {
-            var bookId = +$(this).parent().parent().children(':first')[0].innerText;
-            $.ajax({
-                type: "GET",
-                url: "@Url.Action("Get")",
-                data: { id: bookId },
-                success: function (data) {
-                    $("#bookModal").modal('show');
-                    $("#createBookForm #Id").val(bookId);
-                    $("#createBookForm #Name").val(data.Name);
-                    $("#createBookForm #ReleaseDate").val(formatDate(dateFromJsonNumber(data.ReleaseDate)));
-                    $("#createBookForm #AuthorIds").val(data.AuthorIds).trigger("change");
-                    $("#createBookForm #Rate").val(data.Rate);
-                    $("#createBookForm #PageNumber").val(data.PageNumber);
-                }
-            });
-        });
-
-        $("#booksList").on("click", ".delete-book", function () {
-            var bookId = +$(this).parent().parent().children(':first')[0].innerText;
-            var row = $(this).parent().parent()[0];
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("Delete")",
-                data: { id: bookId },
-                success: function () {
-                    row.remove();
-                },
-                error: function (data) {
-                    $('#AuthorIds').validate();
-                }
-            });
-        });
-
-        //helper
-        function dateFromJsonNumber(value) {
-            var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
-            return date;
-        }
-
-        function formatDate(date) {
-            let dd = date.getDate();
-            let mm = date.getMonth() + 1;
-            const yyyy = date.getFullYear();
-            if (dd < 10) {
-                dd = `0${dd}`;
-            }
-            if (mm < 10) {
-                mm = `0${mm}`;
-            }
-            return `${yyyy}-${mm}-${dd}`;
-        }
-    });
-</script>
