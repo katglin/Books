@@ -30,9 +30,17 @@ a.disabled {
     color: gray;
 }
 
-input, select, textarea {
+input, select, textarea, .btn-form {
     width: 100%;
     max-width: 100%;
+}
+
+.modal-body {
+    position: relative;
+    overflow-y: auto;
+    max-height: 400px;
+    padding: 15px;
+    min-height: 440px;
 }
 
 .select2-container {

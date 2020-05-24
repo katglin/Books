@@ -15,6 +15,15 @@ namespace Web.Controllers
             }
         }
 
+        public JsonResult Get(long id)
+        {
+            using (var bookDM = ServiceProvider.GetService<IBookDM>())
+            {
+                var book = bookDM.GetBook(id);
+                return Json(book, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpPost]
         public JsonResult Create(Book model)
         {
@@ -23,21 +32,12 @@ namespace Web.Controllers
                 using (var bookDM = ServiceProvider.GetService<IBookDM>())
                 {
                     model.Id = bookDM.CreateBook(model);
-                    return Json(bookDM.GetBook((int)model.Id));
+                    return Json(bookDM.GetBook((long)model.Id));
                 }
             }
             else
             {
                 return null;
-            }
-        }
-
-        public JsonResult Get(long id)
-        {
-            using (var bookDM = ServiceProvider.GetService<IBookDM>())
-            {
-                var book = bookDM.GetBook(id);
-                return Json(book, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -49,7 +49,7 @@ namespace Web.Controllers
                 using (var bookDM = ServiceProvider.GetService<IBookDM>())
                 {
                     bookDM.UpdateBook(model);
-                    return Json(bookDM.GetBook((int)model.Id));
+                    return Json(bookDM.GetBook((long)model.Id));
                 }
             }
             else
