@@ -5,6 +5,7 @@ using ViewModels;
 using AutoMapper;
 using DTO;
 using System.Linq;
+using SNSSender;
 
 namespace Business
 {
@@ -39,6 +40,10 @@ namespace Business
             using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
             {
                 var entity = Mapper.Map<BookDTO>(book);
+
+                var jsonBook = Sender.BuildMessage(entity);
+                Sender.Publish("Book", jsonBook);
+
                 return bookRepo.CreateBook(entity);
             }
         }

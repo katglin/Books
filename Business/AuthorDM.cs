@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ViewModels;
 using AutoMapper;
 using DTO;
+using SNSSender;
 
 namespace Business
 {
@@ -46,6 +47,10 @@ namespace Business
             using (var authRepo = ServiceProvider.GetService<IAuthorRepository>())
             {
                 var entity = Mapper.Map<AuthorDTO>(author);
+
+                var jsonAuthor = Sender.BuildMessage(entity);
+                Sender.Publish("Author", jsonAuthor);
+
                 authRepo.CreateAuthor(entity);
             }
         }
