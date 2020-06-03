@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
 using Dapper;
@@ -57,18 +55,11 @@ namespace SQSBookReceiver
             context.Logger.LogLine($"Processed Book message with Mesasge.Body: {message.Body}");
 
             var messageDto = JsonConvert.DeserializeObject<SQSMessageDTO>(message.Body);
-
-            context.Logger.LogLine($"messageDto.Message: {messageDto.Message}");
-
             var bookDto = JsonConvert.DeserializeObject<BookDTO>(messageDto.Message);
-
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-
-                context.Logger.LogLine($"Connection established. BookName: {bookDto.Name}");
-
                 var queryParameters = new DynamicParameters();
                 var ids = bookDto.AuthorIds.AsDataTableParam();
                 queryParameters.Add("@BookName", bookDto.Name);
@@ -77,7 +68,6 @@ namespace SQSBookReceiver
                 queryParameters.Add("@PageNumber", bookDto.PageNumber);
                 queryParameters.Add("@AuthorIds", ids.AsTableValuedParameter("BigIntArrayType"));
                 connection.Query<long>("USPCreateBook", queryParameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
-
                 connection.Close();
             }
             await Task.CompletedTask;
