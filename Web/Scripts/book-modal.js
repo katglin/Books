@@ -56,17 +56,6 @@
                         }
                     });
                 }
-                //else {  // add book row
-                //    $('#booksList tr:first')
-                //        .after(`<tr><td>${data.Id}</td>` +
-                //            `<td>${data.Name}</td>` +
-                //            `<td>${authors.join('')}</td>` +
-                //            `<td>${formatDate(releaseDate)}</td>` +
-                //            `<td>${data.Rate}</td>` +
-                //            `<td>${data.PageNumber}</td>` +
-                //            `<td><a class="edit-book" href="#">Edit</a><br/>` +
-                //            `<a class="delete-book" href="#">Delete</a>`);
-                //}
             }
         });
     });
