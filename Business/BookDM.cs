@@ -5,6 +5,8 @@ using ViewModels;
 using AutoMapper;
 using DTO;
 using System.Linq;
+using SNSSender;
+using Newtonsoft.Json;
 
 namespace Business
 {
@@ -34,12 +36,25 @@ namespace Business
             }
         }
 
-        public long CreateBook(Book book)
+        public void CreateBook(Book book)
         {
             using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
             {
                 var entity = Mapper.Map<BookDTO>(book);
-                return bookRepo.CreateBook(entity);
+
+                var jsonBook = Sender.BuildMessage(entity);
+                Sender.Publish("Book", jsonBook);
+
+                //return bookRepo.CreateBook(entity);
+            }
+        }
+
+        public void CreateBook(string jsonBook)
+        {
+            using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
+            {
+                var bookDto = JsonConvert.DeserializeObject(jsonBook) as BookDTO;
+                bookRepo.CreateBook(bookDto);
             }
         }
 

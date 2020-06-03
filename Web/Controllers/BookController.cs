@@ -25,19 +25,15 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult Create(Book model)
+        public void Create(Book model)
         {
             if (ModelState.IsValid)
             {
                 using (var bookDM = ServiceProvider.GetService<IBookDM>())
                 {
-                    model.Id = bookDM.CreateBook(model);
-                    return Json(bookDM.GetBook((long)model.Id));
+                    bookDM.CreateBook(model);
+                    //return Json(bookDM.GetBook((long)model.Id));
                 }
-            }
-            else
-            {
-                return null;
             }
         }
 
