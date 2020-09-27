@@ -1,4 +1,41 @@
 ﻿$(document).ready(function () {
+    // file upload events
+    $(".book-title-input").change(function () {
+        //var bookId = +$(this).parent().parent().parent().children(':first')[0].innerText;
+        var row = $(this).parent().parent().parent()[0];
+        var img = $(row).find("img");
+        var bookId = $(row).find("td")[0].innerText;
+
+        var formData = new FormData();
+        var totalFiles = this.files.length;
+        if (totalFiles > 0) {
+            var file = this.files[0];
+            if (file.size > 512000) { // 500 KB
+                alert('Sorry, only files up to 500 KB are allowed');
+                return;
+            }
+            formData.append("BookTitleInput", file);
+            formData.append("BookId", bookId);
+        }
+        $.ajax({
+            type: "POST",
+            url: '/Book/UploadImage/' + bookId,
+            data: formData,
+            dataType: "text",
+            contentType: false,
+            processData: false,
+            success: function (url) {
+                if (url && img) {
+                    img.attr('src', url);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('File was not saved')
+            }
+        });
+    });
+
+
     // modal events
     $("#btnShowBookModal").click(function () {
         $("#bookModal").modal('show');

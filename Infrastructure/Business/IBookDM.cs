@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using ViewModels;
 
 namespace Infrastructure.Business
@@ -15,5 +17,7 @@ namespace Infrastructure.Business
         void UpdateBook(Book Book);
 
         void DeleteBook(long id);
+
+        Task<string> UploadImageAsync(int bookId, string fileName, Stream file);
     }
 }

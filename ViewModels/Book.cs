@@ -29,5 +29,9 @@ namespace ViewModels
         [Required]
         [Range(1, 10000, ErrorMessage = "The value must be between 1 and 10000")]
         public int PageNumber { get; set; }
+
+        public string ImageS3Key { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 }

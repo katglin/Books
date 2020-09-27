@@ -14,7 +14,7 @@ namespace Data.Repositories
         {
             using (var connection = ConnectionProvider())
             {
-                string sql = $@"SELECT b.Id, b.Name, b.ReleaseDate, b.Rate, b.PageNumber, a.Id, a.FirstName, a.LastName, ba.BookId, ba.AuthorId
+                string sql = $@"SELECT b.Id, b.Name, b.ReleaseDate, b.Rate, b.PageNumber, b.ImageS3Key, a.Id, a.FirstName, a.LastName, ba.BookId, ba.AuthorId
                                FROM Book b 
                                JOIN BookAuthor ba ON b.Id = ba.BookId
                                JOIN Author a ON a.Id = ba.AuthorId
@@ -43,7 +43,7 @@ namespace Data.Repositories
         {
             using (var connection = ConnectionProvider())
             {
-                string sql = @"SELECT b.Id, b.Name, b.ReleaseDate, b.Rate, b.PageNumber, a.Id, a.FirstName, a.LastName, ba.BookId, ba.AuthorId
+                string sql = @"SELECT b.Id, b.Name, b.ReleaseDate, b.Rate, b.PageNumber, b.ImageS3Key, a.Id, a.FirstName, a.LastName, ba.BookId, ba.AuthorId
                                FROM Book b 
                                JOIN BookAuthor ba ON b.Id = ba.BookId
                                JOIN Author a ON a.Id = ba.AuthorId
@@ -80,9 +80,19 @@ namespace Data.Repositories
                 queryParameters.Add("@ReleaseDate", book.ReleaseDate);
                 queryParameters.Add("@Rate", book.Rate);
                 queryParameters.Add("@PageNumber", book.PageNumber);
+                queryParameters.Add("@ImageS3Key", book.Name);
                 queryParameters.Add("@AuthorIds", ids.AsTableValuedParameter("BigIntArrayType"));
 
                 return connection.Query<long>(SP, queryParameters, commandType: CommandType.StoredProcedure).FirstOrDefault();
+            }
+        }
+
+        public void UpdateBookTitle(int bookId, string bookTitleKey)
+        {
+            using (var connection = ConnectionProvider())
+            {
+                string sql = $@"UPDATE Book SET ImageS3Key='{bookTitleKey}' WHERE Id={bookId}";
+                connection.Query(sql);
             }
         }
 

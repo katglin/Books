@@ -11,6 +11,8 @@ namespace Infrastructure.Data
 
         long CreateBook(BookDTO Book);
 
+        void UpdateBookTitle(int bookId, string bookTitleKey);
+
         void UpdateBook(BookDTO Book);
 
         void DeleteBook(long id);

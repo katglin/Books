@@ -98,8 +98,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceProvider.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AwsS3Client\AwsS3Client.csproj">
+      <Project>{9ac83925-42ec-46d1-af4f-a3ee1d8b0e77}</Project>
+      <Name>AwsS3Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Business\Business.csproj">
       <Project>{9450FB3A-20B5-4C1C-9BE9-7AC2B13529A3}</Project>
       <Name>Business</Name>

@@ -20,6 +20,9 @@
             @Html.DisplayNameFor(model => model.Id)
         </th>
         <th>
+            Title
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
@@ -42,6 +45,20 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @*<input type="file" name="upload" id="uploadFile" /><br />
+                    <button id="submit">Save</button>*@
+                <div class="title-upload">
+                    <label for="book-title-input-@item.Id">
+                        <img width="120" height="80" src="@item.ImageUrl">
+                    </label>
+                    <input class="book-title-input" id="book-title-input-@item.Id" type="file" accept=".png, .jpg, .jpeg" />
+                    @*<div>
+                        <button id="saveImageTitle">Save</button>
+                        <button id="clearImageTitle">Remove</button>
+                    </div>*@
+                </div>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)

@@ -28,6 +28,12 @@ namespace Bootstrap
         {
             RegisterDataModels();
             RegisterBusinessModels();
+            RegisterServices();
+        }
+
+        private void RegisterServices()
+        {
+            _unityContainer.RegisterType<IAwsS3Service, AwsS3Client.AwsS3Service>(new InjectionConstructor(this));
         }
 
         private void RegisterBusinessModels()

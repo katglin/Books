@@ -16,5 +16,7 @@ namespace DTO
         public IEnumerable<long> AuthorIds { get; set; }
         public int Rate { get; set; }
         public int PageNumber { get; set; }
+
+        public string ImageS3Key { get; set; }
     }
 }
