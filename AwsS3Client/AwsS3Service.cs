@@ -12,9 +12,8 @@ namespace AwsS3Client
 {
     public class AwsS3Service: BaseDM, IAwsS3Service
     {
-        //private const string bucketName = "book-title-images";
-        private const string accessKeyId = "AKIAZUSFJVVJLP6YPIS4";
-        private const string secretAccessKey = "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";
+        private const string accessKeyId = "AKIAZUSFJVVJLOQOKBYA";
+        private const string secretAccessKey = "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";
         private static readonly RegionEndpoint bucketRegion = RegionEndpoint.USEast2;
         private static readonly double minutesToLive = 5; 
 
@@ -39,11 +38,9 @@ namespace AwsS3Client
                 BucketName = bucketName,
                 Key = fileKey,
                 InputStream = inputStream
-                //ContentType = contentType,
             };
             await s3Client.PutObjectAsync(fileRequest);
             return fileKey;
-                //GeneratePreSignedURL(fileKey, bucketName);
         }
 
         public string GeneratePreSignedURL(string fileKey, string bucketName)
@@ -67,14 +64,12 @@ namespace AwsS3Client
                 BucketName = bucketName,
                 Key = fileKey
             };
-
             await s3Client.DeleteObjectAsync(deleteObjectRequest);
         }
 
         private string GetFileKey(string fileName)
         {
-            return Guid.NewGuid() + Path.GetExtension(fileName); ;
-               // DateTime.UtcNow + fileName;
+            return Guid.NewGuid() + Path.GetExtension(fileName);
         }
 
         public void Dispose()

@@ -30,30 +30,20 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public void Create(Book model)
+        public JsonResult Create(Book model)
         {
             if (ModelState.IsValid)
             {
                 using (var bookDM = ServiceProvider.GetService<IBookDM>())
                 {
-                    bookDM.CreateBook(model);
-                    //return Json(bookDM.GetBook((long)model.Id));
+                    var bookId = bookDM.CreateBook(model);
+                    return Json(bookDM.GetBook(bookId));
                 }
             }
+            return Json(null);
         }
 
-        //[HttpPost]
-        //public void UploadImage(int bookId, string fileName, Stream file)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        using (var bookDM = ServiceProvider.GetService<IBookDM>())
-        //        {
-        //            bookDM.UploadImageAsync(bookId, fileName, file);
-        //        }
-        //    }
-        //}
-
+        // TODO: add file type enum and combine logic
         [HttpPost]
         public async Task<string> UploadImage()
         {
@@ -69,6 +59,33 @@ namespace Web.Controllers
                 }
             }
             return null;
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UploadAttachment()
+        {
+            if (Request.Files.Count > 0)
+            {
+                var file = Request.Files[0];
+                var fileName = Path.GetFileName(file.FileName);
+                Stream fileStream = file.InputStream;
+                var bookId = Int32.Parse(Request.Params["BookId"]);
+                using (var bookDM = ServiceProvider.GetService<IBookDM>())
+                {
+                    var attachment = await bookDM.UploadAttachmentAsync(bookId, fileName, fileStream);
+                    return Json(attachment);
+                }
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        public async Task DeleteAttachment(string fileKey)
+        {
+            using (var bookDM = ServiceProvider.GetService<IBookDM>())
+            {
+                await bookDM.DeleteAttachmentAsync(fileKey);
+            }
         }
 
         [HttpPost]
@@ -89,11 +106,11 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public void Delete(long id)
+        public async Task DeleteAsync(long id)
         {
             using (var bookDM = ServiceProvider.GetService<IBookDM>())
             {
-                bookDM.DeleteBook(id);
+                await bookDM.DeleteBookAsync(id);
             }
         }
     }

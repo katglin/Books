@@ -12,12 +12,16 @@ namespace Infrastructure.Business
 
         IEnumerable<Book> GetBooks();
 
-        void CreateBook(Book Book);
+        long CreateBook(Book Book);
 
         void UpdateBook(Book Book);
 
-        void DeleteBook(long id);
+        Task DeleteBookAsync(long id);
 
         Task<string> UploadImageAsync(int bookId, string fileName, Stream file);
+
+        Task<Attachment> UploadAttachmentAsync(int bookId, string fileName, Stream file);
+
+        Task DeleteAttachmentAsync(string fileKey);
     }
 }

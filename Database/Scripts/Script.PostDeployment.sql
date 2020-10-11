@@ -1,1 +1,1 @@
-﻿:r .\Post-Deployment\SeedTestData.sql
+﻿--:r .\Post-Deployment\SeedTestData.sql

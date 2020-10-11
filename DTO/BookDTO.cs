@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Mail;
 
 namespace DTO
 {
@@ -8,6 +9,8 @@ namespace DTO
         public BookDTO()
         {
             Authors = new List<AuthorDTO>();
+            Attachments = new List<AttachmentDTO>();
+            AuthorIds = new List<long>();
         }
 
         public string Name { get; set; }
@@ -18,5 +21,7 @@ namespace DTO
         public int PageNumber { get; set; }
 
         public string ImageS3Key { get; set; }
+
+        public List<AttachmentDTO> Attachments { get; set; }
     }
 }
