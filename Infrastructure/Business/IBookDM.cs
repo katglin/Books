@@ -19,9 +19,5 @@ namespace Infrastructure.Business
         Task DeleteBookAsync(long id);
 
         Task<string> UploadImageAsync(int bookId, string fileName, Stream file);
-
-        Task<Attachment> UploadAttachmentAsync(int bookId, string fileName, Stream file);
-
-        Task DeleteAttachmentAsync(string fileKey);
     }
 }

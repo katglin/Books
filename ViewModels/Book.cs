@@ -32,8 +32,10 @@ namespace ViewModels
 
         public string ImageS3Key { get; set; }
 
+        [DisplayName("Title")]
         public string ImageUrl { get; set; }
 
+        [DisplayName("Attachments")]
         public IEnumerable<Attachment> Attachments { get; set; } = new List<Attachment>();
     }
 }

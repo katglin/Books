@@ -5,6 +5,7 @@ using Amazon.S3.Transfer;
 using Business;
 using Infrastructure.Business;
 using System;
+using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -12,21 +13,20 @@ namespace AwsS3Client
 {
     public class AwsS3Service: BaseDM, IAwsS3Service
     {
-        private const string accessKeyId = "AKIAZUSFJVVJLOQOKBYA";
-        private const string secretAccessKey = "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";
-        private static readonly RegionEndpoint bucketRegion = RegionEndpoint.USEast2;
-        private static readonly double minutesToLive = 5; 
-
-        private static IAmazonS3 s3Client;
+        private readonly string _accessKeyId = ConfigurationManager.AppSettings["AWSAccessKey"];
+        private readonly string _secretAccessKey = ConfigurationManager.AppSettings["AWSSecretKey"];
+        private static readonly RegionEndpoint _bucketRegion = RegionEndpoint.USEast2;
+        private static readonly double _minutesToLive = int.Parse(ConfigurationManager.AppSettings["TemporaryS3LinkExpirationMinutes"]);
+        private static IAmazonS3 _s3Client;
 
         public AwsS3Service(Infrastructure.IServiceProvider service) : base(service)
         {
-            s3Client = new AmazonS3Client(accessKeyId, secretAccessKey, bucketRegion);
+            _s3Client = new AmazonS3Client(_accessKeyId, _secretAccessKey, _bucketRegion);
         }
 
         public string GetStaticImage(string fileKey)
         {
-            string bucketName = "static-bookstore-images";
+            string bucketName = this.StaticImagesBucket;
             return this.GeneratePreSignedURL(fileKey, bucketName);
         }
 
@@ -39,7 +39,7 @@ namespace AwsS3Client
                 Key = fileKey,
                 InputStream = inputStream
             };
-            await s3Client.PutObjectAsync(fileRequest);
+            await _s3Client.PutObjectAsync(fileRequest);
             return fileKey;
         }
 
@@ -50,10 +50,9 @@ namespace AwsS3Client
                 BucketName = bucketName,
                 Key = fileKey,
                 Protocol = Protocol.HTTPS,
-                Expires = DateTime.UtcNow.AddMinutes(minutesToLive)
+                Expires = DateTime.UtcNow.AddMinutes(_minutesToLive)
             };
-
-            string url = s3Client.GetPreSignedURL(request);
+            string url = _s3Client.GetPreSignedURL(request);
             return url;
         }
 
@@ -64,16 +63,12 @@ namespace AwsS3Client
                 BucketName = bucketName,
                 Key = fileKey
             };
-            await s3Client.DeleteObjectAsync(deleteObjectRequest);
+            await _s3Client.DeleteObjectAsync(deleteObjectRequest);
         }
 
         private string GetFileKey(string fileName)
         {
             return Guid.NewGuid() + Path.GetExtension(fileName);
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

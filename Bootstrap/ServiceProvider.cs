@@ -40,12 +40,14 @@ namespace Bootstrap
         {
             _unityContainer.RegisterType<IBookDM, BookDM>(new InjectionConstructor(this));
             _unityContainer.RegisterType<IAuthorDM, AuthorDM>(new InjectionConstructor(this));
+            _unityContainer.RegisterType<IAttachmentDM, AttachmentDM>(new InjectionConstructor(this));
         }
 
         private void RegisterDataModels()
         {
             _unityContainer.RegisterType<IBookRepository, BookRepository>();
             _unityContainer.RegisterType<IAuthorRepository, AuthorRepository>();
+            _unityContainer.RegisterType<IAttachmentRepository, AttachmentRepository>();
         }
 
         public void Dispose()

@@ -43,8 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\IAwsS3Service.cs" />
+    <Compile Include="Business\IAttachmentDM.cs" />
     <Compile Include="Business\IBookDM.cs" />
     <Compile Include="Business\IAuthorDM.cs" />
+    <Compile Include="Data\IAttachmentRepository.cs" />
     <Compile Include="Data\IBookRepository.cs" />
     <Compile Include="Data\IAuthorRepository.cs" />
     <Compile Include="Data\IRepository.cs" />

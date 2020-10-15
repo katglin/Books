@@ -55,3 +55,7 @@ input, select, textarea, .btn-form {
 .title-upload img {
     cursor: pointer;
 }
+
+.remove-attachment {
+    cursor: pointer;
+}

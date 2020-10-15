@@ -51,19 +51,8 @@ namespace Business
 
                 var jsonAuthor = Sender.BuildMessage(entity);
                 Sender.Publish("Author", jsonAuthor);
-
-                //authRepo.CreateAuthor(entity);
             }
         }
-
-        //public void CreateAuthor(string jsonAuthor)
-        //{
-        //    using (var authRepo = ServiceProvider.GetService<IAuthorRepository>())
-        //    {
-        //        var authorDto = JsonConvert.DeserializeObject(jsonAuthor) as AuthorDTO;
-        //        authRepo.CreateAuthor(authorDto);
-        //    }
-        //}
 
         public void UpdateAuthor(Author author)
         {

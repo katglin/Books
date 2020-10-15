@@ -13,10 +13,6 @@ namespace Infrastructure.Data
 
         void UpdateBookTitle(int bookId, string bookTitleKey);
 
-        void AddAttachment(long bookId, string fileName, string fileS3Key);
-
-        void DeleteAttachment(string fileS3Key);
-
         void UpdateBook(BookDTO Book);
 
         void DeleteBook(long id);

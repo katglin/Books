@@ -5,8 +5,6 @@ using ViewModels;
 using AutoMapper;
 using DTO;
 using System.Linq;
-using SNSSender;
-using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.IO;
 
@@ -14,9 +12,10 @@ namespace Business
 {
     public class BookDM: BaseDM, IBookDM
     {
+        private const string _defaultImageName = "no-image.png";
+
         public BookDM(Infrastructure.IServiceProvider service) : base(service)
         {
-
         }
 
         public Book GetBook(long id)
@@ -36,13 +35,13 @@ namespace Business
             {
                 var books = bookRepo.GetBooks();
                 var bookVMs = Mapper.Map<IEnumerable<Book>>(books);
-                var deffaultUrl = s3Service.GetStaticImage("no-image.png");
+                var deffaultUrl = s3Service.GetStaticImage(_defaultImageName);
                 foreach (var book in bookVMs)
                 {
-                    book.ImageUrl = !string.IsNullOrEmpty(book.ImageS3Key) ? s3Service.GeneratePreSignedURL(book.ImageS3Key, "book-title-images") : deffaultUrl;
+                    book.ImageUrl = !string.IsNullOrEmpty(book.ImageS3Key) ? s3Service.GeneratePreSignedURL(book.ImageS3Key, this.BookTitlesBucket) : deffaultUrl;
                     foreach(var attachment in book.Attachments)
                     {
-                        attachment.FileUrl = s3Service.GeneratePreSignedURL(attachment.FileS3Key, "book-attachments");
+                        attachment.FileUrl = s3Service.GeneratePreSignedURL(attachment.FileS3Key, this.BookAttachmentsBucket);
                     }
                 }
                 return bookVMs;
@@ -51,44 +50,17 @@ namespace Business
 
         public async Task<string> UploadImageAsync(int bookId, string fileName, Stream file)
         {
-            string bucketName = "book-title-images";
+            string bucketName = this.BookTitlesBucket;
             using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
             using (var s3Service = ServiceProvider.GetService<IAwsS3Service>())
             {
                 var imageS3Key = await s3Service.UploadFileAsync(fileName, bucketName, file);
-
                 var book = bookRepo.GetBook(bookId);
                 if (!string.IsNullOrEmpty(book.ImageS3Key)) {
                     await s3Service.DeleteFileAsync(book.ImageS3Key, bucketName);
                 }
                 bookRepo.UpdateBookTitle(bookId, imageS3Key);
                 return s3Service.GeneratePreSignedURL(imageS3Key, bucketName);
-            }
-        }
-
-        public async Task<Attachment> UploadAttachmentAsync(int bookId, string fileName, Stream file)
-        {
-            string bucketName = "book-attachments";
-            using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
-            using (var s3Service = ServiceProvider.GetService<IAwsS3Service>())
-            {
-                var attachment = new Attachment();
-
-                attachment.FileS3Key = await s3Service.UploadFileAsync(fileName, bucketName, file);
-                bookRepo.AddAttachment(bookId, fileName, attachment.FileS3Key);
-                attachment.FileUrl = s3Service.GeneratePreSignedURL(attachment.FileS3Key, bucketName);
-                return attachment;
-            }
-        }
-
-        public async Task DeleteAttachmentAsync(string fileKey)
-        {
-            using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
-            using (var s3Service = ServiceProvider.GetService<IAwsS3Service>())
-            {
-                string bucketName = "book-attachments";
-                bookRepo.DeleteAttachment(fileKey);
-                await s3Service.DeleteFileAsync(fileKey, bucketName);
             }
         }
 
@@ -115,8 +87,8 @@ namespace Business
             using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
             using (var s3Service = ServiceProvider.GetService<IAwsS3Service>())
             {
-                string titleBucketName = "book-title-images";
-                string attachmentsBucketName = "book-attachments";
+                string titleBucketName = this.BookTitlesBucket;
+                string attachmentsBucketName = this.BookAttachmentsBucket;
                 var book = bookRepo.GetBook(bookId);
                 if (!string.IsNullOrEmpty(book.ImageS3Key))
                 {

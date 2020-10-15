@@ -24,15 +24,6 @@
         {
             _connection = new SqlConnection(_connectionString);
             return _connection;
-            //if(_connection == null)
-            //{
-            //    _connection = new SqlConnection(_connectionString);
-            //    return _connection;
-            //}
-            //else
-            //{
-            //    return _connection;
-            //}
         }
 
         public IEnumerable<TEntity> GetAll()
