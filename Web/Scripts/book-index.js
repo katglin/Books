@@ -14,7 +14,8 @@
     });
 
     $("#booksList").on("click", ".edit-book", function () {
-        var bookId = +$(this).parent().parent().children(':first')[0].innerText;
+        var row = $(this).parent().parent()[0];
+        var bookId = $(row).find("td")[0].innerText;
         $.ajax({
             type: "GET",
             url: "/Book/Get",
@@ -32,11 +33,11 @@
     });
 
     $("#booksList").on("click", ".delete-book", function () {
-        var bookId = +$(this).parent().parent().children(':first')[0].innerText;
         var row = $(this).parent().parent()[0];
+        var bookId = $(row).find("td")[0].innerText;
         $.ajax({
             type: "POST",
-            url: "/Book/Delete",
+            url: "/Book/DeleteAsync",
             data: { id: bookId },
             success: function () {
                 row.remove();

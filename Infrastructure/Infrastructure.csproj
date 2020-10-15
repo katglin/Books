@@ -42,15 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\IAwsS3Service.cs" />
+    <Compile Include="Business\IAttachmentDM.cs" />
     <Compile Include="Business\IBookDM.cs" />
     <Compile Include="Business\IAuthorDM.cs" />
+    <Compile Include="Data\IAttachmentRepository.cs" />
     <Compile Include="Data\IBookRepository.cs" />
     <Compile Include="Data\IAuthorRepository.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="IServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DTO\DTO.csproj">
       <Project>{E2862218-419E-4E36-A76C-F2AD9F1DD146}</Project>

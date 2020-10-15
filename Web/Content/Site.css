@@ -46,3 +46,16 @@ input, select, textarea, .btn-form {
 .select2-container {
     width: 100% !important;
 }
+
+
+.title-upload input[type="file"] {
+    display: none;
+}
+
+.title-upload img {
+    cursor: pointer;
+}
+
+.remove-attachment {
+    cursor: pointer;
+}

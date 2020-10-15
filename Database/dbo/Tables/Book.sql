@@ -5,6 +5,7 @@
     [ReleaseDate] DATE NOT NULL,
     [Rate] TINYINT NOT NULL, 
     [PageNumber] INT NOT NULL,
+    [ImageS3Key] NVARCHAR(MAX) NULL,
 
-	CONSTRAINT PK_Book PRIMARY KEY (Id), 
+    CONSTRAINT PK_Book PRIMARY KEY (Id), 
 )

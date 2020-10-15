@@ -46,11 +46,11 @@
                             $row = $(this);
                             var rowId = $row.find("td:first")[0].innerText;
                             if (rowId == id) {
-                                $row[0].children[1].innerText = data.Name;
-                                $row[0].children[2].innerHTML = authors.join('');
-                                $row[0].children[3].innerText = formatDate(releaseDate);
-                                $row[0].children[4].innerText = data.Rate;
-                                $row[0].children[5].innerText = data.PageNumber;
+                                $row[0].children[2].innerText = data.Name;
+                                $row[0].children[3].innerHTML = authors.join('');
+                                $row[0].children[4].innerText = formatDate(releaseDate);
+                                $row[0].children[5].innerText = data.Rate;
+                                $row[0].children[6].innerText = data.PageNumber;
                                 return false;
                             }
                         }

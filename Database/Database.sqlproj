@@ -77,9 +77,11 @@
     <Build Include="dbo\User Defined Types\BigIntArrayType.sql" />
     <Build Include="dbo\Stored Procedures\USPCreateBook.sql" />
     <Build Include="dbo\Stored Procedures\USPUpdateBook.sql" />
+    <Build Include="dbo\Tables\BookAttachment.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\Post-Deployment\SeedTestData.sql" />
     <None Include="Database.publish.xml" />
+    <None Include="Database_2.publish.xml" />
   </ItemGroup>
 </Project>

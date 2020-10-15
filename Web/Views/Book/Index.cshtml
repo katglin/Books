@@ -20,6 +20,9 @@
             @Html.DisplayNameFor(model => model.Id)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
@@ -34,50 +37,75 @@
         <th>
             @Html.DisplayNameFor(model => model.PageNumber)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Attachments)
+        </th>
         <th></th>
     </tr>
 
     @foreach (var item in Model)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @foreach (var author in item.Authors)
-                {
-                    @Html.ActionLink(
-                        linkText: $"{author.FirstName} {author.LastName}",
-                        actionName: "Edit",
-                        controllerName: "Author",
-                        routeValues: new
-                             {
-                            id = author.Id,
-                            firstName = author.FirstName,
-                            lastName = author.LastName
-                        },
-                        htmlAttributes: null
-                    )
-                    <br />
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReleaseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PageNumber)
-            </td>
-            <td>
-                <a class="edit-book" href="#">Edit</a><br />
-                <a class="delete-book" href="#">Delete</a>
-            </td>
-        </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Id)
+        </td>
+        <td>
+            <div class="title-upload">
+                <label for="book-title-input-@item.Id">
+                    <img width="120" height="80" src="@item.ImageUrl">
+                </label>
+                <input class="book-title-input" id="book-title-input-@item.Id" type="file" accept=".png, .jpg, .jpeg" />
+            </div>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @foreach (var author in item.Authors)
+            {
+                @Html.ActionLink(
+                    linkText: $"{author.FirstName} {author.LastName}",
+                    actionName: "Edit",
+                    controllerName: "Author",
+                    routeValues: new
+                         {
+                        id = author.Id,
+                        firstName = author.FirstName,
+                        lastName = author.LastName
+                    },
+                    htmlAttributes: null
+                )
+                <br />
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReleaseDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Rate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PageNumber)
+        </td>
+        <td>
+            <span class="attachments-list">
+            @foreach (var attachment in item.Attachments)
+            {
+                <a data-attachment="@attachment.FileS3Key" class="attachment-file attachment-info" href="@attachment.FileUrl">@attachment.FileName</a>
+                <span data-attachment="@attachment.FileS3Key" class="glyphicon glyphicon-remove remove-attachment attachment-info"></span>
+                <br />
+            }
+            </span>
+            @if (item.Attachments.Count() <= 2)
+            {
+                <input class="book-attachment-input" id="book-attachment-input-@item.Id" type="file" accept=".png, .jpg, .jpeg" />
+            }
+        </td>
+        <td>
+            <a class="edit-book" href="#">Edit</a><br />
+            <a class="delete-book" href="#">Delete</a>
+        </td>
+    </tr>
     }
 
 </table>

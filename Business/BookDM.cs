@@ -5,16 +5,17 @@ using ViewModels;
 using AutoMapper;
 using DTO;
 using System.Linq;
-using SNSSender;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace Business
 {
     public class BookDM: BaseDM, IBookDM
     {
+        private const string _defaultImageName = "no-image.png";
+
         public BookDM(Infrastructure.IServiceProvider service) : base(service)
         {
-
         }
 
         public Book GetBook(long id)
@@ -30,31 +31,45 @@ namespace Business
         public IEnumerable<Book> GetBooks()
         {
             using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
+            using (var s3Service = ServiceProvider.GetService<IAwsS3Service>())
             {
                 var books = bookRepo.GetBooks();
-                return Mapper.Map<IEnumerable<Book>>(books);
+                var bookVMs = Mapper.Map<IEnumerable<Book>>(books);
+                var deffaultUrl = s3Service.GetStaticImage(_defaultImageName);
+                foreach (var book in bookVMs)
+                {
+                    book.ImageUrl = !string.IsNullOrEmpty(book.ImageS3Key) ? s3Service.GeneratePreSignedURL(book.ImageS3Key, this.BookTitlesBucket) : deffaultUrl;
+                    foreach(var attachment in book.Attachments)
+                    {
+                        attachment.FileUrl = s3Service.GeneratePreSignedURL(attachment.FileS3Key, this.BookAttachmentsBucket);
+                    }
+                }
+                return bookVMs;
             }
         }
 
-        public void CreateBook(Book book)
+        public async Task<string> UploadImageAsync(int bookId, string fileName, Stream file)
+        {
+            string bucketName = this.BookTitlesBucket;
+            using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
+            using (var s3Service = ServiceProvider.GetService<IAwsS3Service>())
+            {
+                var imageS3Key = await s3Service.UploadFileAsync(fileName, bucketName, file);
+                var book = bookRepo.GetBook(bookId);
+                if (!string.IsNullOrEmpty(book.ImageS3Key)) {
+                    await s3Service.DeleteFileAsync(book.ImageS3Key, bucketName);
+                }
+                bookRepo.UpdateBookTitle(bookId, imageS3Key);
+                return s3Service.GeneratePreSignedURL(imageS3Key, bucketName);
+            }
+        }
+
+        public long CreateBook(Book book)
         {
             using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
             {
                 var entity = Mapper.Map<BookDTO>(book);
-
-                var jsonBook = Sender.BuildMessage(entity);
-                Sender.Publish("Book", jsonBook);
-
-                //return bookRepo.CreateBook(entity);
-            }
-        }
-
-        public void CreateBook(string jsonBook)
-        {
-            using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
-            {
-                var bookDto = JsonConvert.DeserializeObject(jsonBook) as BookDTO;
-                bookRepo.CreateBook(bookDto);
+                return bookRepo.CreateBook(entity);
             }
         }
 
@@ -67,11 +82,23 @@ namespace Business
             }
         }
 
-        public void DeleteBook(long id)
+        public async Task DeleteBookAsync(long bookId)
         {
             using (var bookRepo = ServiceProvider.GetService<IBookRepository>())
+            using (var s3Service = ServiceProvider.GetService<IAwsS3Service>())
             {
-                bookRepo.DeleteBook(id);
+                string titleBucketName = this.BookTitlesBucket;
+                string attachmentsBucketName = this.BookAttachmentsBucket;
+                var book = bookRepo.GetBook(bookId);
+                if (!string.IsNullOrEmpty(book.ImageS3Key))
+                {
+                    await s3Service.DeleteFileAsync(book.ImageS3Key, titleBucketName);
+                }
+                foreach (var attachment in book.Attachments)
+                {
+                    await s3Service.DeleteFileAsync(attachment.FileS3Key, attachmentsBucketName);
+                }
+                bookRepo.DeleteBook(bookId);
             }
         }
     }
